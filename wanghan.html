@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+	<meta charset="UTF-8">
+	<title></title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			background: #000;
+			overflow: hidden;
+			user-select: none;
+		}
+
+		#perspective {
+			perspective: 800px;
+		}
+
+		#wrap {
+			position: relative;
+			width: 133px;
+			height: 200px;
+			margin: 150px auto;
+			box-shadow: 0 0 8px #f9f;
+			transform-style: preserve-3d;
+			transform: rotateX(-15deg) rotateY(0deg);
+		}
+
+		#wrap .img {
+			width: 133px;
+			height: 200px;
+			box-shadow: 0 0 8px #f9f;
+			position: absolute;
+			list-style: none;
+		}
+
+		#wrap img {
+			position: absolute;
+			filter: blur(1px);
+			transition: 1s;
+			-webkit-box-reflect: below 5px -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, .5) 100%);
+		}
+
+		#wrap img:hover {
+			filter: blur(0px);
+			transform: scale(1.5);
+		}
+
+		.index-page {
+			width: 100%;
+			height: 100%;
+			background: url(background.jpg) no-repeat;
+			background-color: #DFE1E0;
+			background-size: cover;
+			background-position: center;
+			position: fixed;
+			left: 0;
+			top: 0;
+			z-index: 0;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="perspective" class="index-page">
+		<button id="play" type="button" style="background: blue;">play</button>
+		<audio id="dv" src="Nothing.mp3"></audio>
+		<div id="wrap">
+			<div>
+				<img src="32.jpg" alt="" width="133px" height="200px">
+			</div>
+			<li class="img">
+				<img src="31.jpg" alt="" width="133px" height="200px">
+			</li>
+			<li class="img">
+				<img src="33.jpg" alt="" width="133px" height="200px">
+			</li>
+			<li class="img">
+				<img src="34.jpg" alt="" width="133px" height="200px">
+			</li>
+			<li class="img">
+				<img src="35.jpg" alt="" width="133px" height="200px">
+			</li>
+			<li class="img">
+				<img src="36.jpg" alt="" width="133px" height="200px">
+			</li>
+			<li class="img">
+				<img src="37.jpg" alt="" width="133px" height="200px">
+			</li>
+			<li class="img">
+				<img src="38.jpg" alt="" width="133px" height="200px">
+			</li>
+			<li class="img">
+				<img src="39.jpg" alt="" width="133px" height="200px">
+			</li>
+		</div>
+	</div>
+	<script>
+		var oAudio = document.getElementById('play');
+		var oPlay = document.getElementById('dv');
+
+		oAudio.onclick = function () {
+			if (oPlay.paused) {
+				oPlay.play();
+			} else {
+				oPlay.pause();
+			}
+		}
+
+		var oImg = document.getElementsByClassName("img");
+		var deg = 360 / oImg.length;
+		window.onload = function () {
+			for (var i = 0; i < oImg.length; i++) {
+				oImg[i].style.transform = "rotateY(" + deg * i + "deg) translateZ(350px)";
+				oImg[i].style.transition = "1s " + (oImg.length - i) * 0.1 + "s";
+			}
+		}
+		var newX, newY, sX, sY, lX, lY, rotateX = -15, rotateY = 0;
+		var oWrap = document.getElementById("wrap");
+		document.onmousedown = function (event) {
+			lX = event.clientX;
+			lY = event.clientY;
+			this.onmousemove = function (event) {
+				newX = event.clientX;
+				newY = event.clientY;
+
+				sX = newX - lX;/*求两次移动距离差*/
+				sY = newY - lY;
+
+				rotateX -= sY * 0.2;
+				rotateY += sX * 0.1;
+
+				oWrap.style.transform = " rotateX(" + rotateX + "deg) rotateY(" + rotateY + "deg)";
+
+				//当新的值用完就变成旧的值
+				lX = newX;
+				lY = newY;
+			}
+			this.onmouseup = function (event) {
+				this.onmousemove = null;
+				var timer = setInterval(function () {
+					sX *= 0.95;
+					sY *= 0.95;
+
+					rotateX -= sY * 0.2;
+					rotateY += sX * 0.1;
+
+					oWrap.style.transform = " rotateX(" + rotateX + "deg) rotateY(" + rotateY + "deg)";
+
+					if (Math.abs(sX) < 0.1 && Math.abs(sY) < 0.1) {
+						clearInterval(timer);
+					}
+				}, 13);
+			}
+		}
+	</script>
+</body>
+
+</html>
